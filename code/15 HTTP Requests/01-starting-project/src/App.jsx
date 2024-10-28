@@ -63,17 +63,7 @@ function App() {
     setErrorUpdatingPlace(null);
   }
 
-  useEffect(() => {
-    async function fetchUserFavoritePlaces() {
-      try {
-        const places = await fetchUserPlaces();
-        setUserPlaces(places);
-      } catch (error) {
-        setErrorUpdatingPlace({ message: error.message || 'failed to fetch places' });
-      }
-    }
-    fetchUserFavoritePlaces();
-  }, [userPlaces]);
+  const {} = useFetch(fetchUserPlaces);
 
   return (
     <>
