@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { fetchUserPlaces } from "../http";
+import { useState } from "react";
 
-function useFetch(fetchFunction) {
+export function useFetch(fetchFunction) {
     const [isFetching, setIsFetching] = useState(false);
     const [error, setError] = useState();
     const [fetchedData, setFetchedData] = useState();
@@ -23,5 +23,5 @@ function useFetch(fetchFunction) {
         fetchData();
     }, [fetchFunction]);
 
-    return { isFetching, fetchedData, error };
+    return { isFetching, fetchedData, error, setFetchedData, setIsFetching };
 }

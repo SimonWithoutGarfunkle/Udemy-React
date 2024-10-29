@@ -7,14 +7,15 @@ import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
 import { updateUserPlaces, fetchUserPlaces } from './http.js';
 import ErrorMessage from './components/ErrorMessage.jsx';
+import { useFetch } from './hooks/useFetch.js';
 
 function App() {
   const selectedPlace = useRef();
-
-  const [userPlaces, setUserPlaces] = useState([]);
   const [errorUpdatingPlace, setErrorUpdatingPlace] = useState();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  
+  const { isFetching, error, fetchedData: userPlaces, setFetchedData: setUserPlaces } = useFetch(fetchUserPlaces);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -57,13 +58,11 @@ function App() {
       setErrorUpdatingPlace({message: error.message || 'failed to delete'},);
     }
     setModalIsOpen(false);
-  }, [userPlaces]);
+  }, [userPlaces, setUserPlaces]);
 
   function handleError() {
     setErrorUpdatingPlace(null);
   }
-
-  const {} = useFetch(fetchUserPlaces);
 
   return (
     <>
@@ -71,15 +70,11 @@ function App() {
         {errorUpdatingPlace && (
           <ErrorMessage
             title="An error occurred!"
-            message={errorUpdatingPlace.message}
-            onConfirm={handleError} />
+            message={errorUpdatingPlace.message} onConfirm={handleError} />
         )}
       </Modal>
-      <Modal open={modalIsOpen} onClose={handleStopRemovePlace} onConfirm={handleError}>
-        <DeleteConfirmation
-          onCancel={handleStopRemovePlace}
-          onConfirm={handleRemovePlace}
-        />
+      <Modal open={modalIsOpen} onClose={handleStopRemovePlace} onConfirm={handleError} >
+        <DeleteConfirmation onCancel={handleStopRemovePlace}onConfirm={handleRemovePlace} />
       </Modal>
 
       <header>

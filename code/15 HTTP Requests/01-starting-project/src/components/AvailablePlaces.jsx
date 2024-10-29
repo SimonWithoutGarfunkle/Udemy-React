@@ -3,11 +3,32 @@ import { useState, useEffect } from 'react';
 import ErrorMessage from './ErrorMessage.jsx';
 import { sortPlacesByDistance } from '../loc.js';
 import { fetchAvailablePlaces } from '../http.js';
+import { useFetch } from '../hooks/useFetch.js';
+
+async function fetchSortedPlaces() {
+  const places = await fetchAvailablePlaces();
+
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const sorted = sortPlacesByDistance(
+        places, 
+        position.coords.latitude, 
+        position.coords.longitude
+      );
+      console.log('Location access granted');
+
+      resolve(sorted);
+    });
+  });
+}
 
 export default function AvailablePlaces({ onSelectPlace }) {
-  const [isFetching, setIsFetching] = useState(true);
-  const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [error, setError] = useState();
+  const { 
+    isFetching, 
+    setIsFetching, 
+    error, 
+    fetchedData: availablePlaces, 
+  } = useFetch(fetchSortedPlaces);
 
   useEffect(() => {
     setIsFetching(true);
